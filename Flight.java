@@ -3,7 +3,6 @@
     public class Flight {
 
 
-
     private String flightID;
 
     private String airline;
@@ -59,7 +58,6 @@
     }
 
 
-
     public String toFileString() {
     return flightID + "," + airline + "," + source + "," + destination + "," +
            departureTime + "," + arrivalTime + "," + totalSeats + "," +
@@ -75,25 +73,33 @@
         return null;
     }
 
-    String flightID = parts[0];
-    String airline = parts[1];
-    String source = parts[2];
-    String destination = parts[3];
-    String departureTime = parts[4];
-    String arrivalTime = parts[5];
-    int totalSeats = Integer.parseInt(parts[6]);
-    int availableSeats = Integer.parseInt(parts[7]);
-    int economySeats = Integer.parseInt(parts[8]);
-    int businessSeats = Integer.parseInt(parts[9]);
-    int firstClassSeats = Integer.parseInt(parts[10]);
-    double economyPrice = Double.parseDouble(parts[11]);
-    double businessPrice = Double.parseDouble(parts[12]);
-    double firstClassPrice = Double.parseDouble(parts[13]);
+        String flightID = parts[0];
+        String airline = parts[1];
+        String source = parts[2];
+        String destination = parts[3];
+        String departureTime = parts[4];
+        String arrivalTime = parts[5];
+        int totalSeats = Integer.parseInt(parts[6]);
+        int availableSeats = Integer.parseInt(parts[7]);
+        int economySeats = Integer.parseInt(parts[8]);
+        int businessSeats = Integer.parseInt(parts[9]);
+        int firstClassSeats = Integer.parseInt(parts[10]);
+        double economyPrice = Double.parseDouble(parts[11]);
+        double businessPrice = Double.parseDouble(parts[12]);
+        double firstClassPrice = Double.parseDouble(parts[13]);
 
-    return new Flight(flightID, airline, source, destination, departureTime,
-            arrivalTime, totalSeats, availableSeats,
-            economySeats, businessSeats, firstClassSeats,
-            economyPrice, businessPrice, firstClassPrice);
+        return new Flight(flightID, airline, source, destination, departureTime,
+                arrivalTime, totalSeats, availableSeats,
+                economySeats, businessSeats, firstClassSeats,
+                economyPrice, businessPrice, firstClassPrice);
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getDestination() {
+        return destination;
     }
 
     
@@ -153,28 +159,31 @@
 
 
     public double getPriceBySeatType(String seatType) {
-    seatType = seatType.toLowerCase();
-    switch(seatType) {
-    case "economy": return economyPrice;
-    case "business": return businessPrice;
-    case "firstclass": return firstClassPrice;
-    default:
-        System.out.println("Enter a valid option\n");
-        return 0;
-    }
+        seatType = seatType.toLowerCase();
+        switch(seatType) {
+        case "economy": return economyPrice;
+        case "business": return businessPrice;
+        case "firstclass": return firstClassPrice;
+        default:
+            System.out.println("Enter a valid option\n");
+            return 0;
+        }
 
     }
 
 
-
-public String toString() {
-    return  flightID + ", "+  airline + ", "
-         +  source + ", " + destination + ", "+  departureTime + ", " + arrivalTime + ", "
-         +  totalSeats + ", " + availableSeats+  economySeats + ", " + economyPrice + ", "
-         +  businessSeats + ", " + businessPrice + ", "+  firstClassSeats + ", " + firstClassPrice+"\n";
-}
-
-
-
+    public void displayDetails() {
+        System.out.println("flight id "+this.flightID);
+        System.out.println("airline "+this.airline);
+        System.out.println("source "+this.source);
+        System.out.println("destination "+this.destination);
+        System.out.println("departure time "+this.departureTime);
+        System.out.println("arrival time "+this.arrivalTime);
+        System.out.println("available seats "+this.availableSeats);
+        System.out.println("economy Price "+this.economyPrice);
+        System.out.println("business price "+this.businessPrice);
+        System.out.println("first class price "+this.firstClassPrice);
+        
+    }
 
     }

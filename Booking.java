@@ -1,11 +1,11 @@
 package flight_booking_management;
 
 import java.io.*;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Booking {
-
     private String bookingReference;
     private Customer customer;
     private Flight flight;
@@ -25,7 +25,99 @@ public class Booking {
         this.paymentStatus = "pending";  // default payment status
     }    
     
-    
+   public String toFileString() {
+    StringBuilder passengerData = new StringBuilder();
+    for (Passenger p : passengers) {
+        passengerData.append(p.toFileString()).append(";");
+    }
+    if (!passengers.isEmpty() && passengerData.length() > 0) {
+        passengerData.setLength(passengerData.length() - 1);
+    }
+
+    StringBuilder seatData = new StringBuilder();
+    for (String seat : seatSelections) {
+        seatData.append(seat).append("|");
+    }
+    if (!seatSelections.isEmpty()) {
+        seatData.setLength(seatData.length() - 1);
+    }
+
+    return String.join("##",
+        bookingReference,
+        customer.getUserName(),
+        flight.getFlightID(),
+        seatData.toString(),
+        status,
+        paymentStatus,
+        passengerData.toString()
+    );
+}
+
+public static Booking fromFileString(String data) {
+    try {
+        String[] parts = data.split("##", -1);
+        if (parts.length < 7) {
+            System.out.println("Invalid booking format.");
+            return null;
+        }
+
+        String bookingRef = parts[0];
+        String customerName = parts[1]; // userName
+        String flightId = parts[2];
+        String[] seatTypes = parts[3].split("\\|");
+        String status = parts[4];
+        String paymentStatus = parts[5];
+        String passengerRaw = parts[6];
+
+        // Load actual customer and flight objects
+        Customer customer = null;
+        for (User u : File_Manager.loadUsers()) {
+            if (u instanceof Customer && u.getUserName().equalsIgnoreCase(customerName)) {
+                customer = (Customer) u;
+                break;
+            }
+        }
+
+        Flight flight = null;
+        for (Flight f : File_Manager.loadFlights()) {
+            if (f.getFlightID().equalsIgnoreCase(flightId)) {
+                flight = f;
+                break;
+            }
+        }
+
+        if (customer == null || flight == null) {
+            System.out.println("Customer or flight not found.");
+            return null;
+        }
+
+        // Load passengers
+        List<Passenger> passengers = new ArrayList<>();
+        if (!passengerRaw.isEmpty()) {
+            String[] passengerEntries = passengerRaw.split(";");
+            for (String entry : passengerEntries) {
+                Passenger p = Passenger.fromFileString(entry);
+                if (p != null) passengers.add(p);
+            }
+        }
+
+        // Create booking
+        Booking booking = new Booking(bookingRef, customer, flight);
+        booking.setPassengers(passengers);
+        booking.setSeatSelections(Arrays.asList(seatTypes));
+        booking.setStatus(status);
+        booking.setPaymentStatus(paymentStatus);
+
+        return booking;
+
+    } catch (Exception e) {
+        System.out.println("Error parsing booking: " + e.getMessage());
+        e.printStackTrace();
+        return null;
+    }
+}
+
+
     
     public String getBookingReference() {
         return bookingReference;
@@ -86,8 +178,37 @@ public class Booking {
     // Key Methods
 
     // Add a passenger to the booking
-    public void addPassenger(Passenger passenger) {
-        passengers.add(passenger);
+ public void addPassenger(Passenger passenger, String seatType) {
+
+     
+     
+    // التحقق من إن نوع المقعد يكون من الثلاثة المسموح بيهم
+    if (!seatType.equals("economy") && !seatType.equals("business") && !seatType.equals("firstclass")) {
+        System.out.println("Invalid seat type: " + seatType);
+        return;
+    }
+     
+     
+     
+     if (flight.hasAvailableSeats(seatType)) {
+            passengers.add(passenger);
+            seatSelections.add(seatType);
+            switch (seatType) {
+                case "economy":
+                    flight.reduceEconomySeats();
+                    break;
+                case "business":
+                    flight.reduceBusinessSeats();
+                    break;
+                case "firstclass":
+                    flight.reduceFirstClassSeats();
+                    break;
+            }
+            flight.decreaseAvailableSeats();
+            System.out.println("Passenger added successfully to booking.");
+        } else {
+            System.out.println("No available " + seatType + " seats for this flight.");
+        }
     }
 
     // Calculate total price for the booking
@@ -117,66 +238,21 @@ public class Booking {
         } else {
             System.out.println("Booking cannot be cancelled as it is not confirmed.");
         }
-    }
-
+    }  
     
-    
-    
-    public String toFileString() {
-        StringBuilder passengersString = new StringBuilder();
-        for (Passenger p : passengers) {
-            passengersString.append(p.getPassengerId()).append(";");
+   public void generateItinerary() {
+        System.out.println("Itinerary : ");
+        System.out.println("Booking Reference: " + bookingReference);
+        System.out.println("Customer: " + customer.getName() + " (" + customer.getEmail() + ")");
+        System.out.println("Flight: " + flight.getFlightID() + " from " + flight.toString());
+        System.out.println("Passengers : ");
+        for (int i = 0; i < passengers.size(); i++) {
+            Passenger p = passengers.get(i);
+            System.out.println("  - " + p.getName() + " | Seat Type: " + seatSelections.get(i));
         }
-
-        StringBuilder seatsString = new StringBuilder();
-        for (String seat : seatSelections) {
-            seatsString.append(seat).append(";");
-        }
-
-        return bookingReference + ", " + customer.getCustomerID() + ", " + flight.getFlightID() + ", "
-                + passengersString.toString() + ", " + seatsString.toString() + ", " + status + ", " + paymentStatus;
-    }
-
-    // Load Booking from file string
-    public static Booking fromFileString(String data) {
-        String[] parts = data.split(",", -1);
-        if (parts.length < 7) {
-            System.out.println("Invalid booking data");
-            return null;
-        }
-
-        String bookingReference = parts[0];
-        Customer customer = new Customer(parts[1]);  // Assuming Customer class has a constructor accepting customerID
-        Flight flight = new Flight();  // You can load flight data similarly to how you load from the file
-        List<Passenger> passengers = new ArrayList<>();
-        for (String passengerId : parts[3].split(";")) {
-            passengers.add(new Passenger(Integer.parseInt(passengerId), "", "", "", ""));  // Adjust as needed
-        }
-        List<String> seatSelections = List.of(parts[4].split(";"));
-        String status = parts[5];
-        String paymentStatus = parts[6];
-
-        Booking booking = new Booking(bookingReference, customer, flight);
-        booking.setPassengers(passengers);
-        booking.setSeatSelections(seatSelections);
-        booking.setStatus(status);
-        booking.setPaymentStatus(paymentStatus);
-
-        return booking;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
+        System.out.println("Total Price: " + calculateTotalPrice());
+        System.out.println("Status: " + status + ", Payment: " + paymentStatus);
+    }    
 }
 
             

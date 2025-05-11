@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 
 public class Payment {
-    private String paymentId;
+  private String paymentId;
     private String bookingReference;
     private double amount;
     private String method;
