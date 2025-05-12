@@ -18,6 +18,13 @@ public class Payment {
         this.status = status;
         this.transactionDate=transactionDate;
     }
+
+    public Payment() {
+    }
+    
+    
+    
+    
     public String getPaymentId() {
         return paymentId;
     }
@@ -37,6 +44,8 @@ public class Payment {
         return transactionDate;
     }
 
+    
+    
     public boolean validatePaymentDetails() {
         boolean isValid = true;
 
@@ -55,6 +64,29 @@ public class Payment {
         return isValid;
     }
 
+    
+     public void makePayment(String source, String destination, String seatType, int numberOfSeats) {
+    Flight flight = Booking_System.searchFlight(source, destination);
+    if (flight == null) {
+        System.out.println("No flight found from " + source + " to " + destination + ".");
+        return;
+    }
+    if (flight.getAvailableSeats(seatType) < numberOfSeats) {
+        System.out.println("Not enough seats available in " + seatType + " class.");
+        return;
+    }
+    flight.reduceAvailableSeats(seatType, numberOfSeats);
+    double seatPrice = flight.getPriceBySeatType(seatType);
+    this.amount = seatPrice * numberOfSeats;
+     File_Manager.savePayments(this);
+    System.out.println("Payment completed. Total amount: " + this.amount + 
+        " for " + numberOfSeats + " " + seatType + " seat(s).");
+}
+
+    
+    
+    
+    
 public void processPayment() {        
     if (validatePaymentDetails()) {
             this.status = "Confirmed";

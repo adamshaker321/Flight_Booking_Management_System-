@@ -138,7 +138,29 @@
         }
     }
 
+public void reduceAvailableSeats(String seatType, int numberOfSeats) {
+    seatType = seatType.toLowerCase();
+    for (int i = 0; i < numberOfSeats; i++) {
+        switch (seatType) {
+            case "economy":
+                reduceEconomySeats();
+                break;
+            case "business":
+                reduceBusinessSeats();
+                break;
+            case "firstclass":
+                reduceFirstClassSeats();
+                break;
+            default:
+                System.out.println("Invalid seat type.");
+                return;
+        }
+        decreaseAvailableSeats(); // تقلل من التوتال كمان
+    }
+}
 
+    
+    
     public boolean hasAvailableSeats(String seatType) {
      seatType = seatType.toLowerCase();
     switch (seatType) {
@@ -151,6 +173,22 @@
     }
     }
 
+    
+    public int getAvailableSeats(String seatType) {
+    seatType = seatType.toLowerCase();
+    switch (seatType) {
+        case "economy": return economySeats;
+        case "business": return businessSeats;
+        case "firstclass": return firstClassSeats;
+        default:
+            System.out.println("Invalid seat type.");
+            return 0;
+    }
+}
+
+    
+    
+    
     public double getPriceBySeatType(String seatType) {
         seatType = seatType.toLowerCase();
         switch(seatType) {

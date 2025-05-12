@@ -14,6 +14,18 @@ public class File_Manager {
     public static final String PASSENGERS_FILE ="passengers.txt";
     public static final String PAYMENT_FILE ="payment.txt";
     //save users type
+    
+    
+     public static void clearFile(String fileName) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(fileName))) {
+            // empty file
+        } catch (IOException e) {
+            System.out.println("Error clearing file: " + fileName);
+        }
+    }
+    
+    
+    
     public static void saveUser(User user){
         List<User> users = loadUsers();
         for (User existingUser : users) {
@@ -91,6 +103,9 @@ public class File_Manager {
         }
     }
 
+    
+    
+    
     public static void saveFlight(Flight flight) {
         
         try (PrintWriter writer = new PrintWriter(new FileWriter(FLIGHTS_FILE, true))) {
@@ -112,6 +127,83 @@ public class File_Manager {
         }
         return flights;
     }
+    
+
+
+public static void viewAllFlights() {
+    List<Flight> flights = loadFlights();
+    
+    if (flights.isEmpty()) {
+        System.out.println("No flights available.");
+        return;
+    }
+
+    System.out.println("Available Flights:");
+    System.out.println("-----------------------------------------------------");
+    for (Flight flight : flights) {
+        System.out.println(flight); // تأكد إن toString() في كلاس Flight بيطبع تفاصيل مفيدة
+    }
+    System.out.println("-----------------------------------------------------");
+}
+    
+    
+    
+    public static void removeFlight(String flightIDToRemove) {
+    List<Flight> flights = loadFlights(); // تحميل الرحلات من الملف
+    boolean removed = false;
+
+    // استخدام Iterator عشان نقدر نحذف وإحنا بنلف
+    Iterator<Flight> iterator = flights.iterator();
+    while (iterator.hasNext()) {
+        Flight flight = iterator.next();
+        if (flight != null && flight.getFlightID().equalsIgnoreCase(flightIDToRemove)) {
+            iterator.remove();
+            removed = true;
+        }
+    }
+    if (removed) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(FLIGHTS_FILE))) {
+            for (Flight flight : flights) {
+                writer.println(flight.toFileString());
+            }
+            System.out.println("Flight removed successfully.");
+        } catch (IOException e) {
+            System.out.println("Error saving flights after removal.");
+        }
+    } else {
+        System.out.println("Flight ID not found.");
+    }
+}
+
+    
+    
+    
+    
+    public static void addFlight(Flight flight) {
+    
+        saveFlight(flight);
+
+        System.out.println("Flight " + flight.getFlightID() + " has been added successfully.");
+    }
+    
+    
+    
+     public static Flight searchFlight(String source, String destination){
+        List<Flight> flights =loadFlights();
+        for (Flight flight : flights){
+            if (flight.getSource().equalsIgnoreCase(source)&&
+                    flight.getDestination().equalsIgnoreCase(destination)) {
+                return flight;
+            }
+        }
+        return null;
+    }
+    
+    
+    
+    
+    
+    
 public static void savePayments(Payment payment){
     try (PrintWriter writer = new PrintWriter(new FileWriter(PAYMENT_FILE, true))) {
             writer.println(payment.toFileString());

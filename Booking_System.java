@@ -1,11 +1,12 @@
 package flight_booking_management;
 
 import static flight_booking_management.File_Manager.loadFlights;
+import java.io.*;
+import java.util.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.*;
-import java.io.*;
+
 public class Booking_System {
      private List<User> users;
     private List<Flight> flights;
@@ -33,51 +34,7 @@ public class Booking_System {
         return null;
     }
 
-    public void createBooking(Customer customer) {
-        System.out.print("Enter flight ID: ");
-        String flightId = input.nextLine();
 
-        Flight selectedFlight = null;
-        for (Flight f : flights) {
-            if (f.getFlightID().equalsIgnoreCase(flightId)) {
-                selectedFlight = f;
-                break;
-            }
-        }
-
-        if (selectedFlight == null) {
-            System.out.println("Flight not found.");
-            return;
-        }
-
-        System.out.print("Number of seats: ");
-        int count = Integer.parseInt(input.nextLine());
-
-        Booking booking = new Booking("BK" + System.currentTimeMillis(), customer, selectedFlight);
-
-        for (int i = 1; i <= count; i++) {
-            System.out.println("Passenger " + i);
-            System.out.print("ID: ");
-            String id = input.nextLine();
-            System.out.print("Name: ");
-            String name = input.nextLine();
-            System.out.print("Passport: ");
-            String passport = input.nextLine();
-            System.out.print("DOB: ");
-            String dob = input.nextLine();
-            System.out.print("Special Requests: ");
-            String special = input.nextLine();
-            System.out.print("Seat Type: ");
-            String seatType = input.nextLine();
-
-            Passenger p = new Passenger(id, name, passport, dob, special);
-            booking.addPassenger(p, seatType);
-            File_Manager.savePassenger(p);
-        }
-        File_Manager.saveBooking(booking);
-        bookings.add(booking);
-        System.out.println("Booking created successfully. Ref: " + booking.getBookingReference());
-    }
     public void processPayment(String bookingRef) {
         for (Booking booking : bookings) {
             if (booking.getBookingReference().equalsIgnoreCase(bookingRef)) {
