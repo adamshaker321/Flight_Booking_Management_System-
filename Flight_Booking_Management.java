@@ -154,7 +154,7 @@ String seatType = scanner.nextLine().toLowerCase(); // علشان نبقى مت�
 System.out.print("Enter number of seats: ");
 int numberOfSeats = scanner.nextInt();
 scanner.nextLine(); // استهلاك السطر
-                        payment.makePayment(source, destination, seatType, numberOfSeats);
+                        payment.processPayment(source, destination, seatType, numberOfSeats);
                         
                     }
                     break;

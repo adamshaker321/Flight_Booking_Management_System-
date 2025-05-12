@@ -65,7 +65,7 @@ public class Payment {
     }
 
     
-     public void makePayment(String source, String destination, String seatType, int numberOfSeats) {
+     public void processPayment(String source, String destination, String seatType, int numberOfSeats) {
     Flight flight = Booking_System.searchFlight(source, destination);
     if (flight == null) {
         System.out.println("No flight found from " + source + " to " + destination + ".");
@@ -78,26 +78,16 @@ public class Payment {
     flight.reduceAvailableSeats(seatType, numberOfSeats);
     double seatPrice = flight.getPriceBySeatType(seatType);
     this.amount = seatPrice * numberOfSeats;
-     File_Manager.savePayments(this);
+this.transactionDate = LocalDateTime.now();
+    File_Manager.savePayments(this);
     System.out.println("Payment completed. Total amount: " + this.amount + 
-        " for " + numberOfSeats + " " + seatType + " seat(s).");
+        " for " + numberOfSeats + " " + seatType + " seat(s)."+"date of transaction : "+this.transactionDate);
 }
 
     
     
     
     
-public void processPayment() {        
-    if (validatePaymentDetails()) {
-            this.status = "Confirmed";
-            this.transactionDate = LocalDateTime.now();
-            System.out.println("Payment processed successfully.");
-        }
-        else {
-            this.status = "Failed";
-            System.out.println("Payment validation failed. Payment not processed.");
-        }
-    }
 public void updateStatus(String newStatus) {
         this.status = newStatus;
         System.out.println("Payment status updated to: " + newStatus);
