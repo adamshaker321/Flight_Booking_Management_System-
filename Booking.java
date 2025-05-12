@@ -4,7 +4,6 @@ import java.io.*;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
-
 public class Booking {
     private String bookingReference;
     private Customer customer;
@@ -41,7 +40,6 @@ public class Booking {
     if (!seatSelections.isEmpty()) {
         seatData.setLength(seatData.length() - 1);
     }
-
     return String.join("##",
         bookingReference,
         customer.getUserName(),
@@ -52,7 +50,6 @@ public class Booking {
         passengerData.toString()
     );
 }
-
 public static Booking fromFileString(String data) {
     try {
         String[] parts = data.split("##", -1);
@@ -60,7 +57,6 @@ public static Booking fromFileString(String data) {
             System.out.println("Invalid booking format.");
             return null;
         }
-
         String bookingRef = parts[0];
         String customerName = parts[1]; // userName
         String flightId = parts[2];
@@ -117,52 +113,39 @@ public static Booking fromFileString(String data) {
     }
 }
 
-
-    
     public String getBookingReference() {
         return bookingReference;
     }
-
     public void setBookingReference(String bookingReference) {
         this.bookingReference = bookingReference;
     }
-
     public Customer getCustomer() {
         return customer;
     }
-
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-
     public Flight getFlight() {
         return flight;
     }
-
     public void setFlight(Flight flight) {
         this.flight = flight;
     }
-
     public List<Passenger> getPassengers() {
         return passengers;
     }
-
     public void setPassengers(List<Passenger> passengers) {
         this.passengers = passengers;
     }
-
     public List<String> getSeatSelections() {
         return seatSelections;
     }
-
     public void setSeatSelections(List<String> seatSelections) {
         this.seatSelections = seatSelections;
     }
-
     public String getStatus() {
         return status;
     }
-
     public void setStatus(String status) {
         this.status = status;
     }
@@ -175,22 +158,15 @@ public static Booking fromFileString(String data) {
         this.paymentStatus = paymentStatus;
     }
 
-    // Key Methods
-
-    // Add a passenger to the booking
  public void addPassenger(Passenger passenger, String seatType) {
 
-     
-     
     // التحقق من إن نوع المقعد يكون من الثلاثة المسموح بيهم
     if (!seatType.equals("economy") && !seatType.equals("business") && !seatType.equals("firstclass")) {
         System.out.println("Invalid seat type: " + seatType);
         return;
     }
-     
-     
-     
-     if (flight.hasAvailableSeats(seatType)) {
+
+    if (flight.hasAvailableSeats(seatType)) {
             passengers.add(passenger);
             seatSelections.add(seatType);
             switch (seatType) {
@@ -229,8 +205,6 @@ public static Booking fromFileString(String data) {
             System.out.println("Booking cannot be confirmed. Check payment and status.");
         }
     }
-
-    // Cancel the booking
     public void cancelBooking() {
         if (status.equals("confirmed")) {
             status = "cancelled";
@@ -239,7 +213,6 @@ public static Booking fromFileString(String data) {
             System.out.println("Booking cannot be cancelled as it is not confirmed.");
         }
     }  
-    
    public void generateItinerary() {
         System.out.println("Itinerary : ");
         System.out.println("Booking Reference: " + bookingReference);

@@ -13,11 +13,8 @@ public class File_Manager {
     public static final String BOOKINGS_FILE ="bookings.txt";
     public static final String PASSENGERS_FILE ="passengers.txt";
     public static final String PAYMENT_FILE ="payment.txt";
-    
-    
     //save users type
     public static void saveUser(User user){
-        
         List<User> users = loadUsers();
         for (User existingUser : users) {
             if (existingUser.getEmail().equalsIgnoreCase(user.getEmail()) ||
@@ -25,8 +22,7 @@ public class File_Manager {
                 System.out.println("User already exists");
                 return;
             }
-        }
-        
+        }        
         try (PrintWriter writer =new PrintWriter(new FileWriter(USERS_FILE,true))){
             String userType =user.getClass().getSimpleName();
             writer.println(userType+","+user.toFileString());
@@ -34,9 +30,6 @@ public class File_Manager {
             System.out.println("error saving user");
         }
     }
-    
-        
-        
         public static List<User> loadUsers(){
            List<User> users =new ArrayList<>();
            try(Scanner scanner =new Scanner(new File(USERS_FILE))){
@@ -66,8 +59,6 @@ public class File_Manager {
            }
            return users;
         }
-        
-        
     public static User authenticateUser(String email, String password, String userType) {
         List<User> users = loadUsers();
         for (User user : users) {
@@ -79,7 +70,6 @@ public class File_Manager {
         }
         return null; 
     }
-    
     public static void removeDuplicateUsers() {
         List<User> users = loadUsers();
         Map<String, User> uniqueUsers = new LinkedHashMap<>(); // الحفاظ على الترتيب
@@ -101,8 +91,6 @@ public class File_Manager {
         }
     }
 
-        
-    // Save flight
     public static void saveFlight(Flight flight) {
         
         try (PrintWriter writer = new PrintWriter(new FileWriter(FLIGHTS_FILE, true))) {
@@ -111,7 +99,6 @@ public class File_Manager {
             System.out.println("Error saving flight");
         }
     }
-
     // Load flights
     public static List<Flight> loadFlights() {
         List<Flight> flights = new ArrayList<>();
@@ -125,20 +112,14 @@ public class File_Manager {
         }
         return flights;
     }
-    
 public static void savePayments(Payment payment){
-
     try (PrintWriter writer = new PrintWriter(new FileWriter(PAYMENT_FILE, true))) {
             writer.println(payment.toFileString());
         } catch (IOException e) {
             System.out.println("Error saving payment");
         }
-
 }
-    
-
-
-    public static List<Payment> loadPayments() {
+       public static List<Payment> loadPayments() {
         List<Payment> payments = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(PAYMENT_FILE))) {
             while (scanner.hasNextLine()) {
@@ -150,15 +131,7 @@ public static void savePayments(Payment payment){
         }
         return payments;
     }
-
-
-
-
-
-
-
 // Save booking
-    
     public static void saveBooking(Booking booking) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(BOOKINGS_FILE, true))) {
             writer.println(booking.toFileString());
@@ -180,8 +153,6 @@ public static void savePayments(Payment payment){
         }
         return bookings;
     }
-
-    // Save passenger
     public static void savePassenger(Passenger passenger) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(PASSENGERS_FILE, true))) {
             writer.println(passenger.toFileString());
@@ -189,8 +160,6 @@ public static void savePayments(Payment payment){
             System.out.println("Error saving passenger");
         }
     }
-
-    // Load passengers
     public static List<Passenger> loadPassengers() {
         List<Passenger> passengers = new ArrayList<>();
         try (Scanner scanner = new Scanner(new File(PASSENGERS_FILE))) {

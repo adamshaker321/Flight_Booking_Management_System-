@@ -1,7 +1,5 @@
     package flight_booking_management;
-
     public class Flight {
-
 
     private String flightID;
 
@@ -18,7 +16,6 @@
     private int totalSeats;
 
     private int availableSeats;
-
 
     private int economySeats;
 
@@ -53,10 +50,8 @@
     this.businessPrice = businessPrice;
     this.firstClassPrice = firstClassPrice;
     }
-
     public Flight() {
     }
-
 
     public String toFileString() {
     return flightID + "," + airline + "," + source + "," + destination + "," +
@@ -154,9 +149,7 @@
             System.out.println("Enter a valid option\n");
             return false;
     }
-
     }
-
 
     public double getPriceBySeatType(String seatType) {
         seatType = seatType.toLowerCase();
@@ -170,8 +163,6 @@
         }
 
     }
-
-
     public void displayDetails() {
         System.out.println("flight id "+this.flightID);
         System.out.println("airline "+this.airline);
@@ -185,5 +176,4 @@
         System.out.println("first class price "+this.firstClassPrice);
         
     }
-
     }

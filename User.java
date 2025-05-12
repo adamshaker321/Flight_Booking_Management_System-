@@ -15,7 +15,6 @@ static User loggedInUser;
     public User() {
     }
 
-
     public User(String userId, String userName, String name, String email, String password, boolean contactInfo) {
         this.userId = userId;
         this.userName = userName;
@@ -89,12 +88,9 @@ static User loggedInUser;
         return contactInfo;
     }
 
-
-
     public String toFileString(){
         return userId +","+userName +","+name+","+email+","+password+","+contactInfo+",";
     }
-
 
     public abstract void login();
 

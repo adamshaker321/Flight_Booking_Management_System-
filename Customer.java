@@ -104,49 +104,38 @@ public class Customer extends User {
              
         }else System.out.println(email+" not active yet!");
      }
- 
     public void searchflights(){
-        
         System.out.print("departure ctiy: ");
         String source =input.nextLine();
         System.out.print("destination city: ");
         String destination =input.nextLine();
-        Flight flight =File_Manager.searchFlight(source, destination);
+        Flight flight =Booking_System.searchFlight(source, destination);
         
         if (flight !=null) {
-            System.out.println("flight details");
+            System.out.println("flight details : \n");
             flight.displayDetails();
         }else 
-            System.out.println("not match with your information!");
-        
+            System.out.println("not match with your information!");   
     }
-    
     public void creatBooking() {
-
     System.out.print("Enter flight id: ");
     String flightId = input.nextLine();
-
     List<Flight> flights = File_Manager.loadFlights();
     Flight selectedFlight = null;
-
     for (Flight flight : flights) {
         if (flight.getFlightID().equalsIgnoreCase(flightId)) {
             selectedFlight = flight;
             break;
         }
     }
-
     if (selectedFlight == null) {
         System.out.println("Flight not found.");
         return;
     }
-
     System.out.print("How many seats to book? ");
     int seatCount = Integer.parseInt(input.nextLine());
-
     ArrayList<Passenger> passengers = new ArrayList<>();
     ArrayList<String> seatSelections = new ArrayList<>();
-
     for (int i = 1; i <= seatCount; i++) {
         System.out.println("Enter passenger " + i + " details:");
         System.out.print("Passenger ID: ");
@@ -165,26 +154,19 @@ public class Customer extends User {
         Passenger p = new Passenger(id, name, passport, dob, special);
         passengers.add(p);
         seatSelections.add(seatType);
-
         File_Manager.savePassenger(p);
     }
-
         String bookingRef = "BK" + System.currentTimeMillis();
         Booking booking = new Booking(bookingRef, this, selectedFlight); 
-
         for (int i = 0; i < passengers.size(); i++) {
             booking.addPassenger(passengers.get(i), seatSelections.get(i)); 
         }
-
         File_Manager.saveBooking(booking);
         System.out.println("Booking created successfully! Reference: " + bookingRef);
     }
-
-
         public void viewBookings() {
         List<Booking> bookings = File_Manager.loadBookings();
         boolean found = false;
-
         for (Booking booking : bookings) {
             if (booking.getCustomer().getUserName().equalsIgnoreCase(this.getUserName())) {
                 System.out.println("Booking Ref: " + booking.getBookingReference());
@@ -195,19 +177,15 @@ public class Customer extends User {
                 found = true;
             }
         }
-
         if (!found) {
             System.out.println("You have no bookings.");
         }
         }
-
         public void cancelBooking() {
         System.out.print("Enter booking reference to cancel: ");
         String ref = input.nextLine();
-
         List<Booking> bookings = File_Manager.loadBookings();
         boolean removed = false;
-
         Iterator<Booking> iterator = bookings.iterator();
         while (iterator.hasNext()) {
             Booking booking = iterator.next();
@@ -218,7 +196,6 @@ public class Customer extends User {
                 break;
             }
         }
-
         if (removed) {
             // إعادة كتابة الملف بعد الحذف
             try (PrintWriter writer = new PrintWriter(new FileWriter(File_Manager.BOOKINGS_FILE))) {
@@ -232,6 +209,5 @@ public class Customer extends User {
         } else {
             System.out.println("Booking not found or not yours.");
         }
-    }
-    
+    }    
 }
